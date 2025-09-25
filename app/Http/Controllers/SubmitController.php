@@ -62,6 +62,9 @@ class SubmitController extends Controller
             $body[] = "Notes: ";
             $body[] = $data['notes'];
         }
+        // Add the actual send time to the message
+        $body[] = "";
+        $body[] = "Sent at: " . now()->toIso8601String();
         $message = implode("\n", $body);
         try {
             Mail::raw($message, function ($m) use ($data) {
