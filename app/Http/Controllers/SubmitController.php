@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class SubmitController extends Controller
 {
@@ -12,8 +13,7 @@ class SubmitController extends Controller
     {
         // Validate incoming form
         $data = $request->validate([
-            'submitted_at' => 'nullable|date',
-            'performed_at' => 'required',
+            'date_start' => 'required|date',
             'staff_name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'recipient_email' => 'required|email',
@@ -44,9 +44,16 @@ class SubmitController extends Controller
         // Prepare email body
         $body = [];
         $body[] = "Laundry batch recorded";
-        $body[] = "Submitted at: " . ($data['submitted_at'] ?? now()->toIso8601String());
-        if (!empty($data['performed_at'])) {
-            $body[] = "Performed at: " . $data['performed_at'];
+        $body[] = "Submitted at: " . ($data['submitted_at'] ?? now()->toDateTimeString());
+        if (!empty($data['date_start'])) {
+            // Try to parse and format the date_start value for clarity
+            try {
+                $performed = Carbon::parse($data['date_start'])->toDateTimeString();
+            } catch (\Exception $e) {
+                // Fallback to raw value if parsing fails
+                $performed = $data['date_start'];
+            }
+            $body[] = "Performed at: " . $performed;
         }
         $body[] = "Staff: " . ($data['staff_name'] ?? '');
         $body[] = "Location: " . ($data['location'] ?? '');

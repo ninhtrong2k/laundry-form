@@ -69,11 +69,11 @@
       -->
       <form id="laundryForm" action="{{ route('submit') }}" method="POST" novalidate>
         @csrf
-        <input type="hidden" name="submitted_at" id="submitted_at" />
+  <!-- submitted_at removed: server will use server-side send timestamp -->
         <div class="" style="margin-top:12px">
           <div>
-            <label for="performed_at">Performed at</label>
-            <input type="datetime-local" id="performed_at" name="performed_at" />
+            <label for="date_start">Performed at</label>
+            <input type="datetime-local" id="date_start" name="date_start" />
             <div class="muted">Select the date and time performed (day/month/year hour:minute)</div>
           </div>
         </div>
@@ -167,7 +167,7 @@
 
   <script>
     const form = document.getElementById('laundryForm');
-    const submittedAt = document.getElementById('submitted_at');
+  // submitted_at removed; server uses server-side timestamp
     const qtyInputs = Array.from(form.querySelectorAll('input[type="number"][name$="s"]'));
     const itemsTotalEl = document.getElementById('items_total');
     const costTotalEl  = document.getElementById('cost_total');
@@ -200,16 +200,6 @@
     });
 
     form.addEventListener('submit', () => {
-      const now = new Date();
-      submittedAt.value = now.toISOString(); // example: 2025-09-25T05:12:34.567Z
-      // If a local datetime was provided in the datetime-local input, convert to ISO string
-      const performedInput = document.getElementById('performed_at');
-      if (performedInput && performedInput.value) {
-        // performedInput.value is like "2025-09-25T13:45" (no seconds, no timezone)
-        const local = new Date(performedInput.value);
-        // Convert local time to ISO string (UTC)
-        performedInput.value = local.toISOString();
-      }
       calcTotals();
     });
 
