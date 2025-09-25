@@ -13,6 +13,7 @@ class SubmitController extends Controller
         // Validate incoming form
         $data = $request->validate([
             'submitted_at' => 'nullable|date',
+            'performed_at' => 'nullable|date',
             'staff_name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'recipient_email' => 'required|email',
@@ -44,6 +45,9 @@ class SubmitController extends Controller
         $body = [];
         $body[] = "Laundry batch recorded";
         $body[] = "Submitted at: " . ($data['submitted_at'] ?? now()->toIso8601String());
+        if (!empty($data['performed_at'])) {
+            $body[] = "Performed at: " . $data['performed_at'];
+        }
         $body[] = "Staff: " . ($data['staff_name'] ?? '');
         $body[] = "Location: " . ($data['location'] ?? '');
         $body[] = "";

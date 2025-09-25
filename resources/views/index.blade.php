@@ -70,7 +70,14 @@
       <form id="laundryForm" action="{{ route('submit') }}" method="POST" novalidate>
         @csrf
         <input type="hidden" name="submitted_at" id="submitted_at" />
-        <div class="grid">
+        <div class="" style="margin-top:12px">
+          <div>
+            <label for="performed_at">Performed at</label>
+            <input type="datetime-local" id="performed_at" name="performed_at" />
+            <div class="muted">Select the date and time performed (day/month/year hour:minute)</div>
+          </div>
+        </div>
+        <div class="grid" style="margin-top: 12px">
           <div>
             <label for="staff_name">Staff Name</label>
             <input type="text" id="staff_name" name="staff_name" placeholder="e.g., John Smith" required />
@@ -195,6 +202,14 @@
     form.addEventListener('submit', () => {
       const now = new Date();
       submittedAt.value = now.toISOString(); // example: 2025-09-25T05:12:34.567Z
+      // If a local datetime was provided in the datetime-local input, convert to ISO string
+      const performedInput = document.getElementById('performed_at');
+      if (performedInput && performedInput.value) {
+        // performedInput.value is like "2025-09-25T13:45" (no seconds, no timezone)
+        const local = new Date(performedInput.value);
+        // Convert local time to ISO string (UTC)
+        performedInput.value = local.toISOString();
+      }
       calcTotals();
     });
 
