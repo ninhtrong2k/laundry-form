@@ -13,7 +13,7 @@ class SubmitController extends Controller
         // Validate incoming form
         $data = $request->validate([
             'submitted_at' => 'nullable|date',
-            'performed_at' => 'required|date',
+            'performed_at' => 'required',
             'staff_name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'recipient_email' => 'required|email',
